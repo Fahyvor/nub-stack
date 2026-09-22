@@ -1,0 +1,42 @@
+{
+  "name": "duonexx",
+  "version": "1.0.0",
+  "description": "Ultra-fast scaffolding tool for dual-mode full-stack JS/TS apps (frontend proxies /api in dev, backend serves frontend in prod).",
+  "bin": {
+    "duonexx": "./bin/cli.js",
+    "create-duonexx": "./bin/cli.js"
+  },
+  "main": "./src/index.js",
+  "type": "module",
+  "scripts": {
+    "test": "node test/cli.test.js",
+    "start": "node ./bin/cli.js"
+  },
+  "keywords": [
+    "duonexx",
+    "create-duonexx",
+    "fullstack",
+    "scaffold",
+    "cli",
+    "vite",
+    "react",
+    "express",
+    "elysia",
+    "bun",
+    "typescript",
+    "javascript",
+    "monorepo",
+    "match-nexx"
+  ],
+  "author": "Favour",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "files": [
+    "bin",
+    "src",
+    "README.md",
+    "package.json"
+  ]
+}

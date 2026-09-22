@@ -1,0 +1,25 @@
+{
+  "name": "{{PROJECT_NAME}}",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "dev:server": "cd backend && bun run dev",
+    "dev:full": "concurrently \"npm run dev\" \"npm run dev:server\"",
+    "build": "vite build && npm run build:backend",
+    "build:backend": "cd backend && bun run build",
+    "start": "cd backend && bun run start",
+    "preview": "vite preview",
+    "install:backend": "cd backend && bun install"
+  },
+  "dependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.4",
+    "concurrently": "^9.1.2",
+    "vite": "^6.2.0"
+  }
+}
