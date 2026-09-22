@@ -1,6 +1,6 @@
 # {{PROJECT_NAME}}
 
-Full-stack application created with [duonexx](https://github.com/duonexx).
+Full-stack application created with [nub-stack](https://github.com/nub-stack).
 
 ## Architecture
 

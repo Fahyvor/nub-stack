@@ -11,6 +11,9 @@ export function copyDir(src, dest, replacements = {}) {
   const entries = fs.readdirSync(src, { withFileTypes: true });
 
   for (const entry of entries) {
+    if (entry.name === 'node_modules' || entry.name === 'dist' || entry.name === '.git') {
+      continue;
+    }
     const srcPath = path.join(src, entry.name);
     // Rename _gitignore to .gitignore if present
     const targetName = entry.name === '_gitignore' ? '.gitignore' : entry.name;

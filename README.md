@@ -1,36 +1,36 @@
-# duonexx ⚡
+# nub-stack
 
 > The Dual-Mode Full-Stack Scaffolder for JavaScript and TypeScript.
 > Inspired by the architectural elegance of **match-nexx**.
 
-`duonexx` is an ultra-fast CLI library to spin up full-stack projects configured with an intuitive, unified serving cycle:
+`nub-stack` is an ultra-fast CLI library to spin up full-stack projects configured with an intuitive, unified serving cycle:
 
 - **In Development**: The frontend dev server (Vite) proxies `/api` directly to the backend. You write and test full-stack code without CORS friction.
 - **In Production**: Frontend builds into the backend's static directory, and the backend serves the compiled client bundle with SPA client fallback while handling all `/api` routes.
 
 ---
 
-## ⚡ Quick Start
+## Quick Start
 
 Create a new full-stack project in seconds:
 
 ```bash
 # Using npx
-npx duonexx my-app
+npx nub-stack my-app
 
 # Or using npm create
-npm create duonexx@latest my-app
+npm create nub-stack@latest my-app
 
 # Or using bun
-bun create duonexx my-app
+bun create nub-stack my-app
 
 # Or using pnpm
-pnpm create duonexx my-app
+pnpm create nub-stack my-app
 ```
 
 ---
 
-## 🎯 Flavor & Runtime Options
+## Flavor & Runtime Options
 
 Interactive prompts or CLI flags let you customize your project:
 
@@ -44,10 +44,10 @@ Interactive prompts or CLI flags let you customize your project:
 
 ---
 
-## 💻 Command Line Flags
+## Command Line Flags
 
 ```bash
-npx duonexx [project-name] [options]
+npx nub-stack [project-name] [options]
 ```
 
 | Flag | Description |
@@ -58,21 +58,21 @@ npx duonexx [project-name] [options]
 | `--node, --express` | Use Node.js + Express backend |
 | `--install` | Automatically install dependencies |
 | `--no-install` | Skip installing dependencies |
-| `--pm <npm\|pnpm\|bun\|yarn>` | Explicit package manager to use |
+| `--pm <npm|pnpm|bun|yarn>` | Explicit package manager to use |
 | `-h, --help` | Show help message |
 
 ### Examples:
 ```bash
 # TypeScript + Bun (match-nexx style) with automatic install
-npx duonexx my-app --ts --bun
+npx nub-stack my-app --ts --bun
 
 # JavaScript + Node.js Express
-npx duonexx my-app --js --node
+npx nub-stack my-app --js --node
 ```
 
 ---
 
-## 🏗️ Generated Project Structure
+## Generated Project Structure
 
 ```
 my-app/
@@ -94,7 +94,7 @@ my-app/
 
 ---
 
-## 🔄 How the Dual-Mode Pattern Works
+## How the Dual-Mode Pattern Works
 
 ### 1. In Development (`npm run dev:full`)
 - **Frontend** runs on `http://localhost:5173`.
@@ -123,6 +123,6 @@ my-app/
 
 ---
 
-## 📜 License
+## License
 
-MIT © [Favour](https://github.com/duonexx)
+MIT © [Favour](https://github.com/nub-stack)

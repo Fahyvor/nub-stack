@@ -13,13 +13,13 @@ const publicPath = path.resolve(process.cwd(), 'public');
 
 app.use(express.json());
 
-console.log(`⚡ Starting duonexx server on port ${PORT} (${isProd ? 'production' : 'development'})`);
+console.log(`Starting nub-stack server on port ${PORT} (${isProd ? 'production' : 'development'})`);
 
 // API Routes
 app.get('/api/health', (req, res) => {
   res.json({
     status: 'online',
-    message: 'duonexx backend is healthy',
+    message: 'nub-stack backend is healthy',
     server: 'Node.js + Express',
     timestamp: new Date().toISOString()
   });
@@ -43,13 +43,13 @@ if (isProd) {
       res.sendFile(path.join(publicPath, 'index.html'));
     });
   } else {
-    console.warn(`⚠️  Public directory not found at ${publicPath}. Run 'npm run build' first.`);
+    console.warn(`Public directory not found at ${publicPath}. Run 'npm run build' first.`);
   }
 }
 
 app.listen(PORT, () => {
-  console.log(`🚀 Server running at http://localhost:${PORT}`);
+  console.log(`Server running at http://localhost:${PORT}`);
   if (isProd) {
-    console.log(`📦 Serving static frontend from: ${publicPath}`);
+    console.log(`Serving static frontend from: ${publicPath}`);
   }
 });

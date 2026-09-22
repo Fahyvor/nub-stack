@@ -6,7 +6,7 @@ const PORT = Number(process.env.PORT || 3000);
 const isProd = process.env.NODE_ENV === "production";
 const publicPath = path.join(process.cwd(), "public");
 
-console.log(`⚡ Starting duonexx server on port ${PORT} (${isProd ? "production" : "development"})`);
+console.log(`Starting nub-stack server on port ${PORT} (${isProd ? "production" : "development"})`);
 
 const app = new Elysia()
   // API routes group
@@ -14,7 +14,7 @@ const app = new Elysia()
     app
       .get("/health", () => ({
         status: "online",
-        message: "duonexx backend is healthy",
+        message: "nub-stack backend is healthy",
         server: "Bun + Elysia",
         timestamp: new Date().toISOString()
       }))
@@ -60,8 +60,8 @@ if (isProd) {
 }
 
 app.listen(PORT, () => {
-  console.log(`🚀 Server running at http://localhost:${PORT}`);
+  console.log(`Server running at http://localhost:${PORT}`);
   if (isProd) {
-    console.log(`📦 Serving static frontend from: ${publicPath}`);
+    console.log(`Serving static frontend from: ${publicPath}`);
   }
 });

@@ -10,11 +10,11 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const BANNER = `
-${colors.cyan(colors.bold('   ____ _   _  ___  _   _ _____  ______  __'))}
-${colors.cyan(colors.bold('  |  _ \ | | |/ _ \| \ | | ____| \ \/ / \/ /'))}
-${colors.blue(colors.bold('  | | | | | | | | | |  \| |  _|    \  / \  / '))}
-${colors.blue(colors.bold('  | |_| | |_| | |_| | |\  | |___   /  \ /  \ '))}
-${colors.magenta(colors.bold('  |____/ \___/ \___/|_| \_|_____| /_/\_/_/\_\\'))}
+${colors.cyan(colors.bold('   _   _ _   _ ____        ____ _____    _    ____ _  __'))}
+${colors.cyan(colors.bold('  | \\ | | | | | __ )      / ___|_   _|  / \\  / ___| |/ /'))}
+${colors.blue(colors.bold('  |  \\| | | | |  _ \\ ____ \\___ \\ | |   / _ \\| |   | \' / '))}
+${colors.blue(colors.bold('  | |\\  | |_| | |_) |_____|___) || |  / ___ \\ |___| . \\ '))}
+${colors.magenta(colors.bold('  |_| \\_|\\___/|____/      |____/ |_| /_/   \\_\\____|_|\\_\\'))}
 
 ${colors.dim('  Dual-Mode Full-Stack Scaffolder • dev proxy /api ⇄ prod static server')}
 `;
@@ -79,8 +79,8 @@ function printHelp() {
   console.log(BANNER);
   console.log(`
 ${colors.bold('USAGE:')}
-  ${colors.cyan('npx duonexx')} [project-name] [options]
-  ${colors.cyan('npm create duonexx@latest')} [project-name] [options]
+  ${colors.cyan('npx nub-stack')} [project-name] [options]
+  ${colors.cyan('npm create nub-stack@latest')} [project-name] [options]
 
 ${colors.bold('OPTIONS:')}
   ${colors.green('--ts, --typescript')}    Use TypeScript for both frontend & backend
@@ -111,7 +111,7 @@ async function main() {
   // 1. Project name
   let targetName = options.projectName;
   if (!targetName) {
-    targetName = await prompt(`${colors.bold('?')} ${colors.cyan('Project name')}`, 'my-duonexx-app');
+    targetName = await prompt(`${colors.bold('?')} ${colors.cyan('Project name')}`, 'my-nub-stack-app');
   }
 
   const targetDir = path.resolve(process.cwd(), targetName);
@@ -119,7 +119,7 @@ async function main() {
   if (fs.existsSync(targetDir)) {
     const existing = fs.readdirSync(targetDir);
     if (existing.length > 0) {
-      console.log(colors.yellow(`\n⚠️  Target directory "${targetName}" is not empty!`));
+      console.log(colors.yellow(`\nTarget directory "${targetName}" is not empty!`));
       const proceed = await prompt(`${colors.bold('?')} Proceed and overwrite existing files? (y/N)`, 'n');
       if (proceed.toLowerCase() !== 'y') {
         console.log(colors.red('Aborted.'));
@@ -156,11 +156,11 @@ async function main() {
     process.exit(1);
   }
 
-  console.log(`\n${colors.bold('🚀 Scaffolding duonexx project...')}`);
+  console.log(`\n${colors.bold('Scaffolding nub-stack project...')}`);
   console.log(`  ${colors.gray('• Destination:')} ${colors.cyan(targetDir)}`);
   console.log(`  ${colors.gray('• Flavor:')}      ${colors.green(language === 'ts' ? 'TypeScript' : 'JavaScript')}`);
   console.log(`  ${colors.gray('• Backend:')}     ${colors.magenta(backend === 'bun' ? 'Bun + Elysia' : 'Node.js + Express')}`);
-  console.log(`  ${colors.gray('• Dev Flow:')}    ${colors.blue('Frontend proxies /api ➔ Backend (port 3000)')}`);
+  console.log(`  ${colors.gray('• Dev Flow:')}    ${colors.blue('Frontend proxies /api -> Backend (port 3000)')}`);
   console.log(`  ${colors.gray('• Prod Flow:')}   ${colors.blue('Backend serves frontend build + handles /api')}\n`);
 
   copyDir(templateDir, targetDir, {
@@ -191,7 +191,7 @@ async function main() {
   }
 
   if (shouldInstall) {
-    console.log(`\n${colors.bold('📦 Installing root & backend dependencies with ' + pm + '...')}`);
+    console.log(`\n${colors.bold('Installing root & backend dependencies with ' + pm + '...')}`);
     try {
       console.log(colors.gray(`$ cd ${targetName} && ${pm} install`));
       execSync(`${pm} install`, { cwd: targetDir, stdio: 'inherit' });
@@ -201,15 +201,15 @@ async function main() {
         console.log(colors.gray(`$ cd ${targetName}/backend && ${pm} install`));
         execSync(`${pm} install`, { cwd: backendDir, stdio: 'inherit' });
       }
-      console.log(colors.green('✓ Dependencies installed successfully!'));
+      console.log(colors.green('Dependencies installed successfully!'));
     } catch (err) {
-      console.log(colors.yellow('⚠️  Automatic installation encountered an issue. You can run install manually.'));
+      console.log(colors.yellow('Automatic installation encountered an issue. You can run install manually.'));
     }
   }
 
   // Print Next Steps
   console.log(`
-${colors.green(colors.bold('✨ Success! Created ' + path.basename(targetDir) + ' at ' + targetDir))}
+${colors.green(colors.bold('Success! Created ' + path.basename(targetDir) + ' at ' + targetDir))}
 
 ${colors.bold('Inside that directory, you can run:')}
 
@@ -228,7 +228,7 @@ ${colors.bold('Inside that directory, you can run:')}
      ${colors.cyan(`${pm} run start`)}
      ${colors.gray('→ Unified app: http://localhost:3000')}
 
-${colors.magenta(colors.bold('Happy building with duonexx! 🔥'))}
+${colors.magenta(colors.bold('Happy building with nub-stack!'))}
 `);
 }
 

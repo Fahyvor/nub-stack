@@ -57,7 +57,7 @@ export default function App() {
           fontWeight: '600',
           marginBottom: '1rem'
         }}>
-          DUONEXX FULLSTACK
+          NUB-STACK FULLSTACK
         </div>
 
         <h1 style={{
@@ -124,7 +124,7 @@ export default function App() {
             borderRadius: '8px'
           }}>
             <h3 style={{ fontSize: '0.9rem', color: '#cbd5e1', fontWeight: '600', marginBottom: '0.25rem' }}>
-              🛠️ Dev Mode
+              Dev Mode
             </h3>
             <p style={{ fontSize: '0.8rem', color: '#64748b' }}>
               Vite (5173) ⇄ Backend (3000)
@@ -137,7 +137,7 @@ export default function App() {
             borderRadius: '8px'
           }}>
             <h3 style={{ fontSize: '0.9rem', color: '#cbd5e1', fontWeight: '600', marginBottom: '0.25rem' }}>
-              🚀 Prod Mode
+              Prod Mode
             </h3>
             <p style={{ fontSize: '0.8rem', color: '#64748b' }}>
               Backend serves static & /api
