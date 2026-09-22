@@ -29,117 +29,55 @@ export default function App() {
   }, []);
 
   return (
-    <div style={{
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      justifyContent: 'center',
-      minHeight: '100vh',
-      padding: '2rem',
-      textAlign: 'center'
-    }}>
-      <div style={{
-        maxWidth: '650px',
-        width: '100%',
-        backgroundColor: '#131b2e',
-        border: '1px solid #1e293b',
-        borderRadius: '16px',
-        padding: '2.5rem',
-        boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.5)'
-      }}>
-        <div style={{
-          display: 'inline-block',
-          padding: '0.25rem 0.75rem',
-          borderRadius: '9999px',
-          backgroundColor: '#3b82f61a',
-          color: '#60a5fa',
-          fontSize: '0.875rem',
-          fontWeight: '600',
-          marginBottom: '1rem'
-        }}>
-          NUB-STACK FULLSTACK
+    <div className="min-h-screen flex flex-col items-center justify-center p-6 text-center">
+      <div className="max-w-[640px] w-full bg-[#131b2e] border border-slate-800 rounded-2xl p-8 sm:p-10 shadow-2xl">
+        <div className="inline-block px-3 py-1 rounded-full bg-blue-500/10 text-blue-400 text-xs font-semibold uppercase tracking-wider mb-4">
+          nub-stack fullstack
         </div>
 
-        <h1 style={{
-          fontSize: '2.25rem',
-          fontWeight: '800',
-          letterSpacing: '-0.025em',
-          marginBottom: '0.75rem',
-          background: 'linear-gradient(to right, #60a5fa, #a855f7)',
-          WebkitBackgroundClip: 'text',
-          WebkitTextFillColor: 'transparent'
-        }}>
+        <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight mb-3 bg-gradient-to-r from-blue-400 via-indigo-300 to-purple-500 bg-clip-text text-transparent">
           {{PROJECT_NAME}}
         </h1>
 
-        <p style={{ color: '#94a3b8', fontSize: '1rem', marginBottom: '2rem', lineHeight: '1.5' }}>
-          Dual-mode architecture: Frontend dev server proxies <code>/api</code> in dev, while the backend serves the compiled client bundle in production.
+        <p className="text-slate-400 text-sm sm:text-base mb-8 leading-relaxed">
+          Dual-mode architecture: Frontend dev server proxies <code className="text-blue-300 font-mono">/api</code> in dev, while the backend serves the compiled client bundle in production. Styled with Tailwind CSS v4.
         </p>
 
-        <div style={{
-          backgroundColor: '#0a0f1d',
-          border: '1px solid #1e293b',
-          borderRadius: '12px',
-          padding: '1.25rem',
-          textAlign: 'left',
-          marginBottom: '1.5rem'
-        }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
-            <span style={{ fontSize: '0.85rem', color: '#64748b', fontWeight: '600', textTransform: 'uppercase' }}>
+        <div className="bg-[#0a0f1d] border border-slate-800 rounded-xl p-5 text-left mb-6">
+          <div className="flex justify-between items-center mb-3">
+            <span className="text-xs text-slate-500 font-semibold uppercase tracking-wide">
               API Status (/api/health)
             </span>
-            <span style={{
-              display: 'inline-block',
-              width: '8px',
-              height: '8px',
-              borderRadius: '50%',
-              backgroundColor: loading ? '#f59e0b' : (error ? '#ef4444' : '#10b981')
-            }}></span>
+            <span
+              className={`inline-block w-2.5 h-2.5 rounded-full ${
+                loading ? 'bg-amber-500 animate-pulse' : error ? 'bg-rose-500' : 'bg-emerald-500'
+              }`}
+            />
           </div>
 
-          {loading && <p style={{ color: '#e2e8f0', fontSize: '0.9rem' }}>Checking backend connection...</p>}
-          {error && <p style={{ color: '#f87171', fontSize: '0.9rem' }}>Error: {error} (Ensure backend is running)</p>}
+          {loading && <p className="text-slate-300 text-sm">Checking backend connection...</p>}
+          {error && <p className="text-rose-400 text-sm">Error: {error} (Ensure backend is running)</p>}
           {health && (
-            <pre style={{
-              color: '#38bdf8',
-              fontSize: '0.85rem',
-              overflowX: 'auto',
-              fontFamily: 'monospace'
-            }}>
+            <pre className="text-sky-400 text-xs sm:text-sm overflow-x-auto font-mono bg-black/30 p-3 rounded-lg border border-slate-800/60">
               {JSON.stringify(health, null, 2)}
             </pre>
           )}
         </div>
 
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
-          gap: '1rem',
-          textAlign: 'left'
-        }}>
-          <div style={{
-            padding: '1rem',
-            backgroundColor: '#0f172a',
-            border: '1px solid #1e293b',
-            borderRadius: '8px'
-          }}>
-            <h3 style={{ fontSize: '0.9rem', color: '#cbd5e1', fontWeight: '600', marginBottom: '0.25rem' }}>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-left">
+          <div className="p-4 bg-slate-900/90 border border-slate-800 rounded-xl hover:border-slate-700 transition-colors">
+            <h3 className="text-sm font-semibold text-slate-200 mb-1">
               Dev Mode
             </h3>
-            <p style={{ fontSize: '0.8rem', color: '#64748b' }}>
+            <p className="text-xs text-slate-400">
               Vite (5173) ⇄ Backend (3000)
             </p>
           </div>
-          <div style={{
-            padding: '1rem',
-            backgroundColor: '#0f172a',
-            border: '1px solid #1e293b',
-            borderRadius: '8px'
-          }}>
-            <h3 style={{ fontSize: '0.9rem', color: '#cbd5e1', fontWeight: '600', marginBottom: '0.25rem' }}>
+          <div className="p-4 bg-slate-900/90 border border-slate-800 rounded-xl hover:border-slate-700 transition-colors">
+            <h3 className="text-sm font-semibold text-slate-200 mb-1">
               Prod Mode
             </h3>
-            <p style={{ fontSize: '0.8rem', color: '#64748b' }}>
+            <p className="text-xs text-slate-400">
               Backend serves static & /api
             </p>
           </div>

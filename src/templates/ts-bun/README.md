@@ -7,7 +7,7 @@ Full-stack application created with [nub-stack](https://github.com/nub-stack).
 This project is built using the **Dual-Mode** fullstack pattern:
 
 - **In Development**:
-  - Frontend dev server runs on `http://localhost:5173` (Vite HMR).
+  - Frontend dev server runs on `http://localhost:5173` (Vite HMR + Tailwind CSS v4).
   - Backend server runs on `http://localhost:3000`.
   - Frontend proxies all requests matching `/api` directly to the backend. You call `/api/...` seamlessly without CORS.
 - **In Production**:

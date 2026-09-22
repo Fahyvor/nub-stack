@@ -25,6 +25,8 @@
     "bun",
     "typescript",
     "javascript",
+    "tailwind",
+    "tailwindcss",
     "monorepo",
     "match-nexx"
   ],

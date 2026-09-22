@@ -7,6 +7,7 @@
 
 - **In Development**: The frontend dev server (Vite) proxies `/api` directly to the backend. You write and test full-stack code without CORS friction.
 - **In Production**: Frontend builds into the backend's static directory, and the backend serves the compiled client bundle with SPA client fallback while handling all `/api` routes.
+- **Tailwind CSS v4 Out of the Box**: Zero-configuration styling powered by the official `@tailwindcss/vite` plugin and modern CSS imports.
 
 ---
 
@@ -38,7 +39,10 @@ Interactive prompts or CLI flags let you customize your project:
 - **TypeScript**: Complete end-to-end typing for both React frontend and backend routes.
 - **JavaScript**: Clean, modern ES modules for both frontend and backend.
 
-### 2. Backend Options
+### 2. Styling
+- **Tailwind CSS v4**: Preconfigured on all frontend templates using `@tailwindcss/vite` and `@import "tailwindcss";` (no `tailwind.config.js` needed).
+
+### 3. Backend Options
 - **Bun + Elysia**: Ultra-fast, lightweight HTTP framework (the signature architecture used in `match-nexx`).
 - **Node.js + Express**: Universal compatibility for any standard Node environment or host.
 
@@ -82,12 +86,12 @@ my-app/
 │   ├── public/               # Target directory for built frontend assets
 │   ├── .env.example
 │   └── package.json
-├── src/                      # Frontend application (React)
-│   ├── App.tsx               # Demonstrates live /api/health call
+├── src/                      # Frontend application (React 19)
+│   ├── App.tsx               # Styled with Tailwind CSS v4 & demonstrates /api/health
 │   ├── main.tsx
-│   └── index.css
+│   └── index.css             # Tailwind CSS v4 entrypoint (@import "tailwindcss")
 ├── index.html
-├── vite.config.ts            # Configured with /api proxy and backend outDir
+├── vite.config.ts            # Configured with @tailwindcss/vite and /api proxy
 ├── package.json              # Unified dev & build scripts
 └── README.md
 ```
