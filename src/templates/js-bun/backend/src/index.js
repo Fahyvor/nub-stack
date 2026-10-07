@@ -39,7 +39,7 @@ if (isProd) {
       if (fs.existsSync(indexFile)) {
         return Bun.file(indexFile);
       }
-      return new Response("Frontend not built yet. Run `npm run build` first.", { status: 404 });
+      return new Response("Frontend not built yet. Run `{{RUN}} build` first.", { status: 404 });
     })
     .get("/*", ({ request }) => {
       const pathname = new URL(request.url).pathname;

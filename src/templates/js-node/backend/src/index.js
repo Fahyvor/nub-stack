@@ -43,7 +43,7 @@ if (isProd) {
       res.sendFile(path.join(publicPath, 'index.html'));
     });
   } else {
-    console.warn(`Public directory not found at ${publicPath}. Run 'npm run build' first.`);
+    console.warn(`Public directory not found at ${publicPath}. Run '{{RUN}} build' first.`);
   }
 }
 

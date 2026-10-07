@@ -1,6 +1,6 @@
 {
   "name": "nub-stack",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Ultra-fast scaffolding tool for dual-mode full-stack JS/TS apps (frontend proxies /api in dev, backend serves frontend in prod).",
   "bin": {
     "nub-stack": "./bin/cli.js",

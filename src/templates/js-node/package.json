@@ -3,15 +3,18 @@
   "private": true,
   "version": "0.1.0",
   "type": "module",
+  "workspaces": [
+    "backend"
+  ],
   "scripts": {
     "dev": "vite",
-    "dev:server": "cd backend && npm run dev",
-    "dev:full": "concurrently \"npm run dev\" \"npm run dev:server\"",
-    "build": "vite build && npm run build:backend",
-    "build:backend": "cd backend && npm run build",
-    "start": "cd backend && npm run start",
+    "dev:server": "cd backend && {{BACKEND_RUN}} dev",
+    "dev:full": "concurrently \"{{RUN}} dev\" \"{{RUN}} dev:server\"",
+    "build": "vite build && {{RUN}} build:backend",
+    "build:backend": "cd backend && {{BACKEND_RUN}} build",
+    "start": "cd backend && {{BACKEND_RUN}} start",
     "preview": "vite preview",
-    "install:backend": "cd backend && npm install"
+    "install:backend": "cd backend && {{BACKEND_INSTALL}}"
   },
   "dependencies": {
     "react": "^19.0.0",
@@ -23,5 +26,10 @@
     "concurrently": "^9.1.2",
     "tailwindcss": "^4.0.0",
     "vite": "^6.2.0"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild"
+    ]
   }
 }

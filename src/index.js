@@ -50,6 +50,12 @@ function parseArgs() {
       options.pm = args[++i];
     } else if (arg.startsWith('--pm=')) {
       options.pm = arg.split('=')[1];
+    } else if (arg === '--yarn') {
+      options.pm = 'yarn';
+    } else if (arg === '--pnpm') {
+      options.pm = 'pnpm';
+    } else if (arg === '--npm') {
+      options.pm = 'npm';
     } else if (!arg.startsWith('-') && !options.projectName) {
       options.projectName = arg;
     }
@@ -75,12 +81,34 @@ function prompt(question, defaultVal = '') {
   });
 }
 
+function hasCommand(cmd) {
+  try {
+    execSync(`${cmd} --version`, { stdio: 'ignore' });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+function detectInvokedPackageManager() {
+  const userAgent = process.env.npm_config_user_agent || '';
+  if (userAgent.startsWith('yarn')) return 'yarn';
+  if (userAgent.startsWith('pnpm')) return 'pnpm';
+  if (userAgent.startsWith('bun')) return 'bun';
+  if (userAgent.startsWith('npm')) return 'npm';
+  if (typeof process.versions.bun !== 'undefined') return 'bun';
+  return null;
+}
+
 function printHelp() {
   console.log(BANNER);
   console.log(`
 ${colors.bold('USAGE:')}
   ${colors.cyan('npx nub-stack')} [project-name] [options]
   ${colors.cyan('npm create nub-stack@latest')} [project-name] [options]
+  ${colors.cyan('pnpm create nub-stack')} [project-name] [options]
+  ${colors.cyan('yarn create nub-stack')} [project-name] [options]
+  ${colors.cyan('bun create nub-stack')} [project-name] [options]
 
 ${colors.bold('OPTIONS:')}
   ${colors.green('--ts, --typescript')}    Use TypeScript for both frontend & backend
@@ -90,6 +118,9 @@ ${colors.bold('OPTIONS:')}
   ${colors.green('--install')}             Automatically install dependencies
   ${colors.green('--no-install')}          Skip dependency installation
   ${colors.green('--pm <npm|pnpm|bun|yarn>')} Package manager to use
+  ${colors.green('--yarn')}                Use yarn as package manager
+  ${colors.green('--pnpm')}                Use pnpm as package manager
+  ${colors.green('--npm')}                 Use npm as package manager
   ${colors.green('-h, --help')}            Show this help message
 
 ${colors.bold('ARCHITECTURE:')}
@@ -139,13 +170,81 @@ async function main() {
   }
 
   // 3. Backend: Bun + Elysia or Node + Express
+  const bunInstalled = hasCommand('bun');
   let backend = options.backend;
   if (!backend) {
     console.log(`\n${colors.bold('?')} ${colors.cyan('Select backend runtime & framework:')}`);
-    console.log(`  ${colors.cyan('1)')} Bun + Elysia ${colors.gray('(Ultra-fast, match-nexx architecture)')} ${colors.green('[Recommended]')}`);
-    console.log(`  ${colors.cyan('2)')} Node.js + Express ${colors.gray('(Universal compatibility on any host)')}`);
-    const choice = await prompt(`  Enter choice (1-2)`, '1');
+    if (bunInstalled) {
+      console.log(`  ${colors.cyan('1)')} Bun + Elysia ${colors.gray('(Ultra-fast, match-nexx architecture)')} ${colors.green('[Recommended]')}`);
+      console.log(`  ${colors.cyan('2)')} Node.js + Express ${colors.gray('(Universal compatibility on any host)')}`);
+    } else {
+      console.log(`  ${colors.cyan('1)')} Bun + Elysia ${colors.yellow('(Requires Bun - not found in PATH)')}`);
+      console.log(`  ${colors.cyan('2)')} Node.js + Express ${colors.gray('(Universal compatibility on any host)')} ${colors.green('[Recommended]')}`);
+    }
+    const defaultChoice = bunInstalled ? '1' : '2';
+    const choice = await prompt(`  Enter choice (1-2)`, defaultChoice);
     backend = choice === '2' ? 'node' : 'bun';
+  }
+
+  if (backend === 'bun' && !bunInstalled) {
+    console.log(colors.yellow(`\n⚠️  Warning: Bun was not found in your PATH.`));
+    console.log(colors.yellow(`   The Bun + Elysia backend requires Bun to run.`));
+    console.log(colors.yellow(`   You can install Bun from https://bun.sh\n`));
+  }
+
+  // 4. Package Manager selection
+  const invokedPm = detectInvokedPackageManager();
+  let defaultPm = 'npm';
+  if (options.pm) {
+    defaultPm = options.pm.toLowerCase();
+  } else if (invokedPm && hasCommand(invokedPm)) {
+    defaultPm = invokedPm;
+  } else if (backend === 'bun' && bunInstalled) {
+    defaultPm = 'bun';
+  } else if (hasCommand('pnpm')) {
+    defaultPm = 'pnpm';
+  } else if (hasCommand('yarn')) {
+    defaultPm = 'yarn';
+  } else if (hasCommand('bun')) {
+    defaultPm = 'bun';
+  } else {
+    defaultPm = 'npm';
+  }
+
+  let pm = options.pm ? options.pm.toLowerCase() : '';
+  if (!pm) {
+    const pmList = [
+      { name: 'npm', available: hasCommand('npm') },
+      { name: 'pnpm', available: hasCommand('pnpm') },
+      { name: 'yarn', available: hasCommand('yarn') },
+      { name: 'bun', available: hasCommand('bun') }
+    ];
+
+    console.log(`\n${colors.bold('?')} ${colors.cyan('Select package manager:')}`);
+    pmList.forEach((item, idx) => {
+      const num = idx + 1;
+      const isDefault = item.name === defaultPm;
+      const tag = isDefault ? colors.green('[Recommended]') : (!item.available ? colors.gray('(not installed)') : '');
+      console.log(`  ${colors.cyan(`${num})`)} ${item.name} ${tag}`);
+    });
+
+    const defaultIdx = (pmList.findIndex(p => p.name === defaultPm) + 1).toString() || '1';
+    const pmChoice = await prompt(`  Enter choice (1-4)`, defaultIdx);
+    const chosenIndex = parseInt(pmChoice, 10) - 1;
+    if (chosenIndex >= 0 && chosenIndex < pmList.length) {
+      pm = pmList[chosenIndex].name;
+    } else {
+      pm = defaultPm;
+    }
+  }
+
+  if (!['npm', 'pnpm', 'yarn', 'bun'].includes(pm)) {
+    console.log(colors.yellow(`Unknown package manager "${pm}". Defaulting to npm.`));
+    pm = 'npm';
+  }
+
+  if (!hasCommand(pm)) {
+    console.log(colors.yellow(`\n⚠️  Warning: "${pm}" is not detected in your PATH. Please ensure it is installed.`));
   }
 
   const templateKey = `${language}-${backend}`;
@@ -157,29 +256,51 @@ async function main() {
   }
 
   console.log(`\n${colors.bold('Scaffolding nub-stack project...')}`);
-  console.log(`  ${colors.gray('• Destination:')} ${colors.cyan(targetDir)}`);
-  console.log(`  ${colors.gray('• Flavor:')}      ${colors.green(language === 'ts' ? 'TypeScript' : 'JavaScript')}`);
-  console.log(`  ${colors.gray('• Backend:')}     ${colors.magenta(backend === 'bun' ? 'Bun + Elysia' : 'Node.js + Express')}`);
-  console.log(`  ${colors.gray('• Dev Flow:')}    ${colors.blue('Frontend proxies /api -> Backend (port 3000)')}`);
-  console.log(`  ${colors.gray('• Prod Flow:')}   ${colors.blue('Backend serves frontend build + handles /api')}\n`);
+  console.log(`  ${colors.gray('• Destination:')}     ${colors.cyan(targetDir)}`);
+  console.log(`  ${colors.gray('• Flavor:')}          ${colors.green(language === 'ts' ? 'TypeScript' : 'JavaScript')}`);
+  console.log(`  ${colors.gray('• Backend:')}         ${colors.magenta(backend === 'bun' ? 'Bun + Elysia' : 'Node.js + Express')}`);
+  console.log(`  ${colors.gray('• Package Manager:')} ${colors.yellow(pm)}`);
+  console.log(`  ${colors.gray('• Dev Flow:')}        ${colors.blue('Frontend proxies /api -> Backend (port 3000)')}`);
+  console.log(`  ${colors.gray('• Prod Flow:')}       ${colors.blue('Backend serves frontend build + handles /api')}\n`);
+
+  const scriptRun = `${pm} run`;
+  const backendRun = backend === 'bun' ? 'bun run' : `${pm} run`;
+  const backendInstall = backend === 'bun' && bunInstalled ? 'bun install' : `${pm} install`;
 
   copyDir(templateDir, targetDir, {
     '{{PROJECT_NAME}}': path.basename(targetDir),
     '{{LANGUAGE}}': language,
-    '{{BACKEND}}': backend
+    '{{BACKEND}}': backend,
+    '{{PM}}': pm,
+    '{{RUN}}': scriptRun,
+    '{{BACKEND_RUN}}': backendRun,
+    '{{BACKEND_INSTALL}}': backendInstall
   });
 
-  // Check package manager
-  let pm = options.pm;
-  if (!pm) {
-    if (backend === 'bun' && hasCommand('bun')) {
-      pm = 'bun';
-    } else if (hasCommand('pnpm')) {
-      pm = 'pnpm';
-    } else if (hasCommand('npm')) {
-      pm = 'npm';
-    } else {
-      pm = 'npm';
+  // Package-manager-specific configuration
+  if (pm === 'pnpm') {
+    // Generate pnpm-workspace.yaml so root and backend are treated as workspaces
+    const pnpmWorkspacePath = path.join(targetDir, 'pnpm-workspace.yaml');
+    if (!fs.existsSync(pnpmWorkspacePath)) {
+      fs.writeFileSync(pnpmWorkspacePath, "packages:\n  - 'backend'\n", 'utf-8');
+    }
+  } else if (pm === 'yarn') {
+    // Yarn Berry (v2+) requires yarn.lock to identify project boundary
+    // and nodeLinker: node-modules so standard node_modules are created
+    const yarnrcPath = path.join(targetDir, '.yarnrc.yml');
+    if (!fs.existsSync(yarnrcPath)) {
+      fs.writeFileSync(yarnrcPath, 'nodeLinker: node-modules\n', 'utf-8');
+    }
+    const rootLockPath = path.join(targetDir, 'yarn.lock');
+    if (!fs.existsSync(rootLockPath)) {
+      fs.writeFileSync(rootLockPath, '# yarn lockfile v1\n', 'utf-8');
+    }
+    const backendDir = path.join(targetDir, 'backend');
+    if (fs.existsSync(backendDir)) {
+      const backendLockPath = path.join(backendDir, 'yarn.lock');
+      if (!fs.existsSync(backendLockPath)) {
+        fs.writeFileSync(backendLockPath, '# yarn lockfile v1\n', 'utf-8');
+      }
     }
   }
 
@@ -191,21 +312,27 @@ async function main() {
   }
 
   if (shouldInstall) {
-    console.log(`\n${colors.bold('Installing root & backend dependencies with ' + pm + '...')}`);
+    console.log(`\n${colors.bold('Installing dependencies with ' + pm + '...')}`);
     try {
       console.log(colors.gray(`$ cd ${targetName} && ${pm} install`));
       execSync(`${pm} install`, { cwd: targetDir, stdio: 'inherit' });
 
       const backendDir = path.join(targetDir, 'backend');
-      if (fs.existsSync(backendDir)) {
-        console.log(colors.gray(`$ cd ${targetName}/backend && ${pm} install`));
-        execSync(`${pm} install`, { cwd: backendDir, stdio: 'inherit' });
+      const backendModules = path.join(backendDir, 'node_modules');
+      // If backend node_modules is not populated (e.g. if workspaces didn't link backend or backend uses bun)
+      if (fs.existsSync(backendDir) && !fs.existsSync(backendModules)) {
+        const bInstallCmd = (backend === 'bun' && bunInstalled) ? 'bun install' : `${pm} install`;
+        console.log(colors.gray(`$ cd ${targetName}/backend && ${bInstallCmd}`));
+        execSync(bInstallCmd, { cwd: backendDir, stdio: 'inherit' });
       }
-      console.log(colors.green('Dependencies installed successfully!'));
+      console.log(colors.green('\nDependencies installed successfully!'));
     } catch (err) {
-      console.log(colors.yellow('Automatic installation encountered an issue. You can run install manually.'));
+      console.log(colors.yellow('\nAutomatic installation encountered an issue. You can run install manually.'));
     }
   }
+
+  const displayRun = pm === 'npm' ? 'npm run' : `${pm} run`;
+  const displayStart = pm === 'npm' ? 'npm start' : `${pm} start`;
 
   // Print Next Steps
   console.log(`
@@ -214,31 +341,22 @@ ${colors.green(colors.bold('Success! Created ' + path.basename(targetDir) + ' at
 ${colors.bold('Inside that directory, you can run:')}
 
   ${colors.cyan(`cd ${targetName}`)}
-  ${!shouldInstall ? colors.cyan(`${pm} install && cd backend && ${pm} install && cd ..`) : ''}
+  ${!shouldInstall ? colors.cyan(`${pm} install`) : ''}
 
   ${colors.bold('1. Development Mode (Runs Frontend + Proxies /api to Backend):')}
-     ${colors.cyan(`${pm} run dev:full`)}
+     ${colors.cyan(`${displayRun} dev:full`)}
      ${colors.gray('→ Frontend: http://localhost:5173')}
      ${colors.gray('→ Backend API: http://localhost:3000/api')}
 
   ${colors.bold('2. Production Build (Builds Frontend into Backend Static Host):')}
-     ${colors.cyan(`${pm} run build`)}
+     ${colors.cyan(`${displayRun} build`)}
 
   ${colors.bold('3. Production Server (Runs Backend serving both Frontend & /api):')}
-     ${colors.cyan(`${pm} run start`)}
+     ${colors.cyan(`${displayStart}`)}
      ${colors.gray('→ Unified app: http://localhost:3000')}
 
 ${colors.magenta(colors.bold('Happy building with nub-stack!'))}
 `);
-}
-
-function hasCommand(cmd) {
-  try {
-    execSync(`${cmd} --version`, { stdio: 'ignore' });
-    return true;
-  } catch {
-    return false;
-  }
 }
 
 main().catch(err => {

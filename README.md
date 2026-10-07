@@ -22,11 +22,14 @@ npx nub-stack my-app
 # Or using npm create
 npm create nub-stack@latest my-app
 
-# Or using bun
-bun create nub-stack my-app
-
 # Or using pnpm
 pnpm create nub-stack my-app
+
+# Or using yarn
+yarn create nub-stack my-app
+
+# Or using bun
+bun create nub-stack my-app
 ```
 
 ---
@@ -46,6 +49,13 @@ Interactive prompts or CLI flags let you customize your project:
 - **Bun + Elysia**: Ultra-fast, lightweight HTTP framework (the signature architecture used in `match-nexx`).
 - **Node.js + Express**: Universal compatibility for any standard Node environment or host.
 
+### 4. Package Managers
+Full, native support with automatic workspaces for:
+- **npm**: Uses standard npm workspaces (`workspaces: ["backend"]`).
+- **pnpm**: Configures `pnpm-workspace.yaml` and enables native build scripts (`onlyBuiltDependencies: ["esbuild"]`).
+- **yarn**: Full Yarn Berry (v2+) & Yarn Classic support with `.yarnrc.yml` (`nodeLinker: node-modules`) and independent lockfiles.
+- **bun**: Full Bun workspace and lockfile support with native script execution.
+
 ---
 
 ## Command Line Flags
@@ -62,16 +72,25 @@ npx nub-stack [project-name] [options]
 | `--node, --express` | Use Node.js + Express backend |
 | `--install` | Automatically install dependencies |
 | `--no-install` | Skip installing dependencies |
-| `--pm <npm|pnpm|bun|yarn>` | Explicit package manager to use |
+| `--pm <npm\|pnpm\|bun\|yarn>` | Explicit package manager to use |
+| `--yarn` | Shorthand for `--pm yarn` |
+| `--pnpm` | Shorthand for `--pm pnpm` |
+| `--npm` | Shorthand for `--pm npm` |
 | `-h, --help` | Show help message |
 
 ### Examples:
 ```bash
-# TypeScript + Bun (match-nexx style) with automatic install
-npx nub-stack my-app --ts --bun
+# TypeScript + Bun with Bun package manager & install
+npx nub-stack my-app --ts --bun --pm bun --install
 
-# JavaScript + Node.js Express
-npx nub-stack my-app --js --node
+# TypeScript + Node with Yarn
+npx nub-stack my-app --ts --node --yarn --install
+
+# TypeScript + Node with PNPM
+npx nub-stack my-app --ts --node --pnpm --install
+
+# JavaScript + Node.js Express with npm
+npx nub-stack my-app --js --node --npm
 ```
 
 ---
